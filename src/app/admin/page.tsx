@@ -76,11 +76,11 @@ export default function AdminPanel() {
                     <li>Order #124 - <span className="font-semibold text-green-600">Completed</span></li>
                   </ul> */}
                 </div>
-                <Link href="/admin/orders"
-                  className="mt-6 inline-block text-sky-600 hover:text-sky-700 font-medium group transition-colors"
-                  legacyBehavior>
-                  View All Orders
-                  <span className="ml-1 inline-block transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+                <Link href="/admin/orders">
+                  <span className="mt-6 inline-block text-sky-600 hover:text-sky-700 font-medium group transition-colors">
+                    View All Orders
+                    <span className="ml-1 inline-block transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+                  </span>
                 </Link>
               </div>
 
