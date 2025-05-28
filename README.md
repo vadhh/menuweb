@@ -34,6 +34,8 @@ Tired of sticky, outdated paper menus? Say hello to the future! This project is 
 * **UI Components:** [Shadcn UI](https://ui.shadcn.com/) (Likely suspects for those sleek buttons and components! 😉)
 * **Icons:** [React Icons](https://react-icons.github.io/react-icons/) (Fi, ChevronLeft, AlertTriangle - making things look sharp! ✨)
 
+Heres a very detailed Documentation:
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/vadhh/menuweb)
 ---
 
 ## 🚀 Get Ready for Liftoff: Setup & Installation! 🛰️
@@ -72,7 +74,6 @@ Tired of sticky, outdated paper menus? Say hello to the future! This project is 
     ```
     *Heads Up!* You might need to give `scripts/seed.ts` a little TLC to match your current schema and dream data.
 
----
 
 ## 🎉 Let's Get This Party Started: Running the Project! 🥳
 
@@ -84,10 +85,11 @@ npm run dev
 # yarn dev
 # pnpm dev
 # bun dev
-
+```
 Then, point your browser to http://localhost:3000 and behold! Your QR Menu app, live and kicking!
 
-🗺️ Project Blueprint: A Quick Tour! 🧭
+## 🗺️ Project Blueprint: A Quick Tour! 🧭
+
 src/app/: The heart of your Next.js app, where pages and API routes live.
 (customer)/: All the cool stuff your customers will see (like that gorgeous menu!).
 admin/: The command center for admins (dashboard, categories, products, orders – oh my!).
@@ -98,11 +100,11 @@ lib/mongodb.ts: The direct line to your MongoDB.
 lib/models/: The blueprints for your data (Order.ts, Product.ts, Category.ts, User.ts).
 public/: Where your static stuff hangs out (images, fonts, etc.).
 scripts/: Helpful little scripts for tasks like seeding.
-👑 Accessing the Throne Room (Admin Panel) 🏰
+
+## 👑 Accessing the Throne Room (Admin Panel) 🏰
 Ready to rule your menu? Navigate to /admin. If you're not logged in, our trusty NextAuth.js will politely ask for your credentials. Make sure you've got a user account set up in your database!
 
-🚧 Future Adventures & Epic Quests (TODO List) 📜
-This project is already awesome, but here's a peek at the treasure map for future enhancements:
+## 🚧 Future Adventures & Epic Quests (TODO List) 📜
 
 [ ] Role Call! Implement robust user roles (Admin vs. Super Admin vs. Mildly-Interested User).
 [ ] Oopsie Daisies & High Fives! Better error handling and more encouraging user feedback.
