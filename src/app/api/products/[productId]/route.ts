@@ -7,24 +7,14 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { productId: string } }
 ) {
+  const { productId } = params; // MOVED TO THE TOP, before any await
+  // console.log('ProductId accessed at the very start:', productId); // Optional: new log
+
   try {
-    await clientPromise();
-
-    const { productId } = params;
-
-    // ---- START DEBUG LOGS ----
-    console.log('--- API: GET /api/products/[productId] ---');
-    console.log('Received productId from URL params:', productId);
-    console.log('Type of productId:', typeof productId);
-    if (productId) {
-      console.log('Length of productId:', productId.length);
-    } else {
-      console.log('productId is undefined or null');
-    }
-    // ---- END DEBUG LOGS ----
+    await clientPromise(); // MongoDB connection
 
     if (!ObjectId.isValid(productId)) {
-      console.error('ObjectId.isValid returned false for:', productId); // Log this specific case
+      console.error('ObjectId.isValid returned false for:', productId);
       return NextResponse.json({ message: 'Invalid product ID format in API' }, { status: 400 });
     }
 
@@ -34,10 +24,10 @@ export async function GET(
       return NextResponse.json({ message: 'Product not found' }, { status: 404 });
     }
 
-    // Consider ensuring the response also has _id as a string for consistency
+    // Consider explicit toObject and toString for _id for consistency
     const responseProduct = {
-      ...product.toObject(), // Get a plain object
-      _id: product._id.toString(), // Ensure _id is a string
+      ...product.toObject(),
+      _id: product._id.toString(),
     };
 
     return NextResponse.json(responseProduct, { status: 200 });

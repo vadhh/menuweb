@@ -14,8 +14,7 @@ import { addToCart, decreaseQuantity, removeFromCart } from '@/lib/redux/cartSli
 interface Product {
   _id: string; // Changed from 'id' to '_id' to match MongoDB's default ID field
   name: string;
-  price: string;
-  numericalPrice?: number;
+  price: number; // <<-- CHANGE THIS TO number
   imageUrl: string;
   description?: string;
   category: string; // Assuming category is a string ID or name
@@ -31,21 +30,34 @@ async function fetchProductDetails(productId: string): Promise<Product | null> {
       }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-    // Parse price here for convenience, assuming price comes as a string like "Rp. 10.000"
-    if (data.price) {
-      try {
-        data.numericalPrice = parseFloat(data.price.replace(/Rp\.\s?/g, '').replace(/\./g, '').replace(',', '.'));
-      } catch (e) {
-        console.error("Could not parse price from API response:", data.price);
-        data.numericalPrice = 0; // Default or handle error
-      }
+    const data = await response.json(); // data.price from API is already a number (e.g., 18000)
+
+    // The 'price' field (data.price) is already a number.
+    // No need for the previous parsing block if the API guarantees a number.
+
+    // You can add a check if you want to be extra safe:
+    if (typeof data.price !== 'number') {
+      console.error("API Warning: Price was expected as a number, but received:", data.price, typeof data.price);
+      // You might want to attempt a conversion here if this case is possible,
+      // or assign a default, or ensure the API contract is firm.
+      // For now, assuming the API sends a number as per the schema.
     }
-    return data as Product;
+
+    return data as Product; // data.price is now a number, matching the updated interface
   } catch (error) {
     console.error('Error fetching product details from API:', error);
     return null;
   }
+}
+
+// Helper function (can be in the same file or a utils file)
+function formatCurrency(amount: number, locale: string = 'id-ID', currency: string = 'IDR'): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0, // To avoid ".00" if prices are whole numbers
+    maximumFractionDigits: 0  // To avoid ".00"
+  }).format(amount);
 }
 
 export default function ProductPage() {
@@ -92,11 +104,11 @@ export default function ProductPage() {
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (product && product.numericalPrice !== undefined) {
+    if (product) {
       dispatch(addToCart({
         id: product._id,
         name: product.name,
-        price: product.numericalPrice, // Use parsed numerical price
+        price: product.price, // Use product.price directly, it's already a number
         quantity: 1,
         imageUrl: product.imageUrl // Optional: if your cart slice stores it
       }));
@@ -104,12 +116,12 @@ export default function ProductPage() {
   };
 
   const handleIncreaseQuantity = () => {
-    if (product && product.numericalPrice !== undefined) {
+    if (product) {
       // addToCart reducer typically handles incrementing quantity if item exists
       dispatch(addToCart({
         id: product._id,
         name: product.name,
-        price: product.numericalPrice,
+        price: product.price,
         quantity: 1, // Dispatching with quantity 1, reducer should sum up
         imageUrl: product.imageUrl
       }));
@@ -189,7 +201,7 @@ export default function ProductPage() {
 
           <div className="p-6">
             <h1 className="text-3xl font-bold text-foreground mb-2">{product.name}</h1>
-            <p className="text-2xl font-semibold text-primary mb-4">{product.price}</p>
+            <p className="text-2xl font-semibold text-primary mb-4">{formatCurrency(product.price)}</p>
 
             {product.description && (
               <p className="text-muted-foreground text-base mb-6 leading-relaxed">{product.description}</p>
