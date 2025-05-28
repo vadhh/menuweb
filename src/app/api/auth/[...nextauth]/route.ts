@@ -18,7 +18,7 @@ const handler = NextAuth({
 
         // Ensure Mongoose is connected
         if (mongoose.connection.readyState !== 1) {
-          await mongoose.connect(process.env.MONGO_URL as string);
+          await mongoose.connect(process.env.MONGODB_URI as string);
         }
 
         // Find the user by email
