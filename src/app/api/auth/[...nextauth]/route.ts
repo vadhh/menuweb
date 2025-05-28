@@ -1,16 +1,16 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import mongoose from "mongoose";
 import { User } from "@/app/models/user"; // Assuming your User model is here
 import bcrypt from 'bcryptjs'; // You need to install bcryptjs: npm install bcryptjs
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "text@example.com" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
         const email = credentials?.email;
@@ -32,7 +32,7 @@ const handler = NextAuth({
 
           if (passwordOk) {
             // Return user object (excluding sensitive info like password hash)
-            return { id: user._id, name: user.email, email: user.email }; // Return minimal user info
+            return { id: user._id.toString(), name: user.email, email: user.email }; // Return minimal user info
           }
         }
 
@@ -45,6 +45,35 @@ const handler = NextAuth({
   // pages: {
   //   signIn: '/login', // Specify your login page path
   // },
-});
+  session: {
+    strategy: 'jwt',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      // console.log('JWT Callback - User:', user); // Removed log
+      // console.log('JWT Callback - Token (Before):', token); // Removed log
+      if (user) {
+        token.id = (user as any).id.toString(); // Ensure id is a string
+      }
+      // console.log('JWT Callback - Token (After):', token); // Removed log
+      return token;
+    },
+    async session({ session, token }) {
+      // console.log('Session Callback - Token:', token); // Removed log
+      // console.log('Session Callback - Session (Before):', session); // Removed log
+      if (session.user && token.id) {
+        (session.user as any).id = token.id as string;
+      }
+      // console.log('Session Callback - Session (After):', session); // Removed log
+      return session;
+    },
+  },
+  pages: {
+    signIn: '/login',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

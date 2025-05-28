@@ -3,11 +3,12 @@ import { DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose
 import { Button } from "@/components/ui/button";
 import { Trash2 } from 'lucide-react'; // Import the delete icon
 import { AppDispatch } from '@/lib/redux/store'; // Import AppDispatch type
-import { removeFromCart } from '@/lib/redux/cartSlice'; // Import the action
+import { clearCart, removeFromCart } from '@/lib/redux/cartSlice'; // Import clearCart and removeFromCart actions
+import { useSession } from 'next-auth/react'; // Import useSession
 
 // Define a simple type for cart items (you'll expand this later)
 interface CartItem {
-  id: string;
+  id: string; // This should ideally be the productId
   name: string;
   price: number; // Store price as number for calculations
   quantity: number;
@@ -19,12 +20,57 @@ interface CartDrawerContentProps {
 }
 
 const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ cartItems, dispatch }) => {
+  const { data: session } = useSession(); // Get session data
   // Calculate total price (example)
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // Function to handle removing an item
   const handleRemoveItem = (itemId: string) => {
     dispatch(removeFromCart(itemId));
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
+
+    // Prepare items for the backend
+    const orderPayload = {
+      items: cartItems.map(item => ({
+        productId: item.id, // Assuming item.id is the productId
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      // You can add customerName and customerEmail here if needed for guest checkouts
+      // customerName: 'Guest User',
+      // customerEmail: 'guest@example.com',
+    };
+
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(`Order created successfully! Order ID: ${result.orderId}`);
+        dispatch(clearCart()); // Clear the cart on successful order
+        // Optionally, close the drawer or navigate the user
+      } else {
+        alert(`Failed to create order: ${result.message || 'Unknown error'}`);
+        console.error('Order creation failed:', result);
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      alert('An unexpected error occurred during checkout.');
+    }
   };
 
   return (
@@ -66,7 +112,13 @@ const CartDrawerContent: React.FC<CartDrawerContentProps> = ({ cartItems, dispat
             <span>Total:</span>
             <span>Rp. {total.toLocaleString('id-ID')}</span> {/* Format total price */}
         </div>
-        <Button className="w-full bg-red-500 text-white rounded-md">Proceed to Checkout</Button>
+        <Button 
+          className="w-full bg-red-500 text-white rounded-md" 
+          onClick={handleCheckout} // Add the onClick handler here
+          disabled={cartItems.length === 0} // Optionally disable if cart is empty
+        >
+          Proceed to Checkout
+        </Button>
         <DrawerClose asChild>
           <Button variant="outline">Close</Button>
         </DrawerClose>
