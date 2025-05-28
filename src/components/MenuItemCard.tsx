@@ -40,29 +40,29 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   return (
     <div className="bg-card border border-border rounded-xl shadow-lg overflow-hidden flex flex-col h-full
                     transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-0.5">
-      <Link href={`/products/${product._id}`} passHref legacyBehavior>
-        <a className="block cursor-pointer">
-          {/* Image Section - Adjusted aspect ratio */}
-          <div className="aspect-[4/3] w-full overflow-hidden">
-            <img
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              src={product.imageUrl || 'https://via.placeholder.com/320x240/E0E0E0/B0B0B0?text=Menu'}
-              alt={altText || product.name}
-              onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/320x240/E0E0E0/B0B0B0?text=Error')}
-            />
-          </div>
+      <Link
+      href={`/products/${product._id}`}
+      className="block cursor-pointer" >
+      {/* Image Section - Adjusted aspect ratio */}
+      <div className="aspect-[4/3] w-full overflow-hidden">
+        <img
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          src={product.imageUrl || 'https://via.placeholder.com/320x240/E0E0E0/B0B0B0?text=Menu'}
+          alt={altText || product.name}
+          onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/320x240/E0E0E0/B0B0B0?text=Error')}
+        />
+      </div>
 
-          {/* Content Section - Reduced padding and font size for name */}
-          <div className="p-3 flex flex-col flex-grow">
-            <h3 className="text-sm font-semibold text-foreground mb-1 truncate" title={product.name}>
-              {product.name}
-            </h3>
-            {/* Price color changed to text-foreground with font-semibold */}
-            <p className="text-sm text-foreground font-semibold mb-2.5">
-              {formattedPrice}
-            </p>
-          </div>
-        </a>
+      {/* Content Section - Reduced padding and font size for name */}
+      <div className="p-3 flex flex-col flex-grow">
+        <h3 className="text-sm font-semibold text-foreground mb-1 truncate" title={product.name}>
+          {product.name}
+        </h3>
+        {/* Price color changed to text-foreground with font-semibold */}
+        <p className="text-sm text-foreground font-semibold mb-2.5">
+          {formattedPrice}
+        </p>
+      </div>
       </Link>
 
       {/* Cart Interaction Buttons - Aligned to bottom */}

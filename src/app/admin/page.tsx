@@ -46,7 +46,6 @@ export default function AdminPanel() {
             </div>
           </div>
         </header>
-
         {/* Main Content */}
         <main className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,10 +76,9 @@ export default function AdminPanel() {
                     <li>Order #124 - <span className="font-semibold text-green-600">Completed</span></li>
                   </ul> */}
                 </div>
-                <Link
-                  href="/admin/orders" // Assuming you'll have an orders page
+                <Link href="/admin/orders"
                   className="mt-6 inline-block text-sky-600 hover:text-sky-700 font-medium group transition-colors"
-                >
+                  legacyBehavior>
                   View All Orders
                   <span className="ml-1 inline-block transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
                 </Link>
@@ -100,7 +98,7 @@ export default function AdminPanel() {
                     <Link
                       href="/admin/products"
                       className="flex items-center text-lg text-slate-700 hover:text-sky-600 hover:bg-sky-50 p-3 rounded-md transition-all duration-200 group"
-                    >
+                      legacyBehavior>
                       <FiBox className="mr-3 text-xl text-sky-500 group-hover:animate-pulse" />
                       Manage Products
                       <span className="ml-auto text-sm text-slate-400 group-hover:text-sky-500 transition-colors">&rarr;</span>
@@ -110,7 +108,7 @@ export default function AdminPanel() {
                     <Link
                       href="/admin/categories"
                       className="flex items-center text-lg text-slate-700 hover:text-sky-600 hover:bg-sky-50 p-3 rounded-md transition-all duration-200 group"
-                    >
+                      legacyBehavior>
                       <FiGrid className="mr-3 text-xl text-sky-500 group-hover:animate-pulse" />
                       Manage Categories
                       <span className="ml-auto text-sm text-slate-400 group-hover:text-sky-500 transition-colors">&rarr;</span>
@@ -157,7 +155,6 @@ export default function AdminPanel() {
             </div>
           </div>
         </main>
-
         {/* Footer */}
         <footer className="bg-white border-t border-slate-200 mt-10">
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
