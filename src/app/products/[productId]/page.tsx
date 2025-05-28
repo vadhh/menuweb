@@ -5,12 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Minus, Plus, ShoppingBag, Loader2, AlertTriangle } from 'lucide-react'; // Added icons
 
-// Redux imports
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@/lib/redux/store';
 import { addToCart, decreaseQuantity, removeFromCart } from '@/lib/redux/cartSlice';
 
-// Define a type for your product data
 interface Product {
   _id: string; // Changed from 'id' to '_id' to match MongoDB's default ID field
   name: string;

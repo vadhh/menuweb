@@ -179,7 +179,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-40 bg-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
             <Link href="/" className="text-red-600 font-bold text-2xl tracking-tight">
-              Bakso Lebam
+              Bakso Muncul 
             </Link>
             
           <nav className="flex items-center gap-3 sm:gap-4">
