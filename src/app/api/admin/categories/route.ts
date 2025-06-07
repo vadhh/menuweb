@@ -5,11 +5,7 @@ import { Category } from '@/app/models/Category';
 // NO INTERFACES (Params, HandlerContext) should be here.
 
 // GET a single category by ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function GET(request: NextRequest, { id }: Params) {
   try {
     await connectMongoDB();
     const category = await Category.findById(id);
