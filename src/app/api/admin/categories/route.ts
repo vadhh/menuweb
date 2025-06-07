@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import { Category } from '@/app/models/Category';
 
-// The interface for your dynamic route parameters remains correct
+// Define the shape of the dynamic route parameters
 interface Params {
   id: string;
 }
 
-// Corrected context parameter type for all handlers
+// Define the shape of the context object passed as the second argument
 interface HandlerContext {
   params: Params;
 }
@@ -17,12 +17,6 @@ export async function GET(request: NextRequest, { params }: HandlerContext) {
   try {
     await connectMongoDB();
     const { id } = params;
-    
-    // Improved error handling for invalid MongoDB ObjectIDs
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
-    }
-
     const category = await Category.findById(id);
     if (!category) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
@@ -30,9 +24,8 @@ export async function GET(request: NextRequest, { params }: HandlerContext) {
     return NextResponse.json(category);
   } catch (error) {
     console.error(`Error fetching category ${params.id}:`, error);
-    // CastError is now handled by the format check above, but this is a good fallback.
     if (error instanceof Error && error.name === 'CastError') {
-        return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
     return NextResponse.json({ message: "Error fetching category" }, { status: 500 });
   }
@@ -43,24 +36,19 @@ export async function PUT(request: NextRequest, { params }: HandlerContext) {
   try {
     await connectMongoDB();
     const { id } = params;
-
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
-    }
-
     const body = await request.json();
     const { name, description, imageUrl } = body;
 
-    const updateData: { [key: string]: any } = {};
+    const updateData: { name?: string; description?: string; imageUrl?: string } = {};
     if (name) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
-
+    
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ message: "No update fields provided" }, { status: 400 });
+        return NextResponse.json({ message: "No update fields provided" }, { status: 400 });
     }
 
-    const updatedCategory = await Category.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedCategory = await Category.findByIdAndUpdate(id, updateData, { new: true });
     if (!updatedCategory) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
     }
@@ -68,11 +56,7 @@ export async function PUT(request: NextRequest, { params }: HandlerContext) {
   } catch (error) {
     console.error(`Error updating category ${params.id}:`, error);
     if (error instanceof Error && error.name === 'CastError') {
-        return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
-    }
-    // Add specific handling for Mongoose validation errors
-    if (error instanceof Error && error.name === 'ValidationError') {
-        return NextResponse.json({ message: "Validation Error", errors: (error as any).errors }, { status: 400 });
+      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
     return NextResponse.json({ message: "Error updating category" }, { status: 500 });
   }
@@ -83,11 +67,6 @@ export async function DELETE(request: NextRequest, { params }: HandlerContext) {
   try {
     await connectMongoDB();
     const { id } = params;
-
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
-    }
-
     const deletedCategory = await Category.findByIdAndDelete(id);
     if (!deletedCategory) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
@@ -96,7 +75,7 @@ export async function DELETE(request: NextRequest, { params }: HandlerContext) {
   } catch (error) {
     console.error(`Error deleting category ${params.id}:`, error);
     if (error instanceof Error && error.name === 'CastError') {
-        return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
     return NextResponse.json({ message: "Error deleting category" }, { status: 500 });
   }
