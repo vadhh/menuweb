@@ -194,9 +194,10 @@ export default function CategoriesPage() {
         <CategoryForm 
           onClose={handleFormClose} 
           onSubmit={handleFormSubmit} 
-          initialData={editingCategory}
+          initialData={editingCategory || undefined}
           isSubmitting={isSubmitting}
           submissionError={submissionError} // Pass submission error to form
+          onCancel={handleFormClose} // Add this line
         />
       ) : (
         <div className="bg-white shadow-xl rounded-lg overflow-hidden">

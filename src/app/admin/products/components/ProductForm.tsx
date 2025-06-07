@@ -20,6 +20,7 @@ interface ProductFormProps {
   onSubmit: (data: ProductFormData, id?: string) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
+  submissionError: string | null; // Add this line
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCancel, isSubmitting }) => {

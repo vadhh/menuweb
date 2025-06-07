@@ -5,9 +5,9 @@ import { ObjectId } from 'mongodb';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
-  const { productId } = params; // MOVED TO THE TOP, before any await
+  const { productId } = await params; // AWAIT PARAMS HERE
   // console.log('ProductId accessed at the very start:', productId); // Optional: new log
 
   try {

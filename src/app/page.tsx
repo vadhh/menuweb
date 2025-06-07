@@ -138,7 +138,6 @@ export default function HomePage() {
       id: product._id, // Use _id from fetched data
       name: product.name,
       price: product.price,
-      quantity: 1,
       // imageUrl: product.imageUrl
     }));
   };

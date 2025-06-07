@@ -8,7 +8,7 @@ interface Product {
   name: string;
   price: number; // Price is now a number
   imageUrl?: string;
-  categoryId: string;
+  category: string; // Changed from categoryId to category
   description?: string;
 }
 

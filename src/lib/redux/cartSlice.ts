@@ -4,8 +4,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface CartItem {
   id: string;
   name: string;
-  price: number; // Ensure price is a number for calculations
+  price: number;
   quantity: number;
+  imageUrl?: string; // Add this line
 }
 
 // Define the initial state for the cart

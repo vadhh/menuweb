@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'; // Corrected import path
+// Remove these two lines:
+// import { getServerSession } from 'next-auth/next';
+// import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Order, { IOrderItem } from '@/lib/models/Order'; // Ensure Order model is imported
 import connectMongoDB from '@/lib/mongodb';
+import { auth } from "@/lib/auth"; // Keep this import
 
 interface OrderRequestBody {
   items: Array<{
@@ -20,7 +22,7 @@ interface OrderRequestBody {
 export async function POST(req: NextRequest) {
   try {
     await connectMongoDB();
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Changed from getServerSession(authOptions)
 
     const body = await req.json() as OrderRequestBody;
     const { items, customerName, customerEmail } = body;
@@ -104,7 +106,7 @@ export async function GET(req: NextRequest) {
   try {
     await connectMongoDB(); // Using the utility function
 
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Changed from getServerSession(authOptions)
 
     if (!session || !session.user) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -133,7 +135,7 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     await connectMongoDB();
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Changed from getServerSession(authOptions)
 
     if (!session || !session.user) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -176,7 +178,7 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await connectMongoDB();
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Changed from getServerSession(authOptions)
 
     if (!session || !session.user) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });

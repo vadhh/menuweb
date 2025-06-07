@@ -4,22 +4,24 @@ import React, { useState, useEffect } from 'react';
 
 interface CategoryFormData {
   name: string;
-  description: string;
-  imageUrl: string; // Add imageUrl to the interface
+  description?: string; // Make description optional
+  imageUrl?: string; // Make imageUrl optional
 }
 
 interface CategoryFormProps {
-  initialData?: CategoryFormData & { _id?: string }; // Ensure initialData can have imageUrl
+  initialData?: CategoryFormData & { _id?: string };
   onSubmit: (data: CategoryFormData, id?: string) => Promise<void>;
   onCancel: () => void;
+  onClose: () => void;
   isSubmitting: boolean;
+  submissionError: string | null; // Add submissionError prop
 }
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ initialData, onSubmit, onCancel, isSubmitting }) => {
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',
     description: '',
-    imageUrl: '', // Initialize imageUrl
+    imageUrl: '',
     ...(initialData || {}),
   });
 

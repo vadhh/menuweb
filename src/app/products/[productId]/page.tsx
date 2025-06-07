@@ -107,7 +107,6 @@ export default function ProductPage() {
         id: product._id,
         name: product.name,
         price: product.price, // Use product.price directly, it's already a number
-        quantity: 1,
         imageUrl: product.imageUrl // Optional: if your cart slice stores it
       }));
     }
@@ -120,7 +119,7 @@ export default function ProductPage() {
         id: product._id,
         name: product.name,
         price: product.price,
-        quantity: 1, // Dispatching with quantity 1, reducer should sum up
+        // quantity: 1, // Remove this line
         imageUrl: product.imageUrl
       }));
     }
