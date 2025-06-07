@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import { Category } from '@/app/models/Category';
 
+// NO INTERFACES (Params, HandlerContext) should be here.
+
 // GET a single category by ID
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params; // id is now correctly typed as string
+  const { id } = params;
   try {
     await connectMongoDB();
-    
     const category = await Category.findById(id);
     if (!category) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
@@ -33,11 +34,9 @@ export async function PUT(
   const { id } = params;
   try {
     await connectMongoDB();
-    
     const body = await request.json();
     const { name, description, imageUrl } = body;
-
-    const updateData: { name?: string; description?: string; imageUrl?: string } = {};
+    const updateData: { [key: string]: any } = {};
     if (name) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
@@ -45,7 +44,6 @@ export async function PUT(
     if (Object.keys(updateData).length === 0) {
         return NextResponse.json({ message: "No update fields provided" }, { status: 400 });
     }
-
     const updatedCategory = await Category.findByIdAndUpdate(id, updateData, { new: true });
     if (!updatedCategory) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
@@ -68,7 +66,6 @@ export async function DELETE(
   const { id } = params;
   try {
     await connectMongoDB();
-    
     const deletedCategory = await Category.findByIdAndDelete(id);
     if (!deletedCategory) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
