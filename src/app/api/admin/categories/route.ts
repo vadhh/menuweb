@@ -1,5 +1,3 @@
-TEST
-
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import { Category } from '@/app/models/Category';
