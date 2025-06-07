@@ -2,28 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import { Category } from '@/app/models/Category';
 
-// Define the shape of the dynamic route parameters
-interface Params {
-  id: string;
-}
-
-// Define the shape of the context object passed as the second argument
-interface HandlerContext {
-  params: Params;
-}
-
 // GET a single category by ID
-export async function GET(request: NextRequest, { params }: HandlerContext) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params; // id is now correctly typed as string
   try {
     await connectMongoDB();
-    const { id } = params;
+    
     const category = await Category.findById(id);
     if (!category) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
     }
     return NextResponse.json(category);
   } catch (error) {
-    console.error(`Error fetching category ${params.id}:`, error);
+    console.error(`Error fetching category ${id}:`, error);
     if (error instanceof Error && error.name === 'CastError') {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
@@ -32,10 +26,14 @@ export async function GET(request: NextRequest, { params }: HandlerContext) {
 }
 
 // PUT (update) a category by ID
-export async function PUT(request: NextRequest, { params }: HandlerContext) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
   try {
     await connectMongoDB();
-    const { id } = params;
+    
     const body = await request.json();
     const { name, description, imageUrl } = body;
 
@@ -54,7 +52,7 @@ export async function PUT(request: NextRequest, { params }: HandlerContext) {
     }
     return NextResponse.json(updatedCategory);
   } catch (error) {
-    console.error(`Error updating category ${params.id}:`, error);
+    console.error(`Error updating category ${id}:`, error);
     if (error instanceof Error && error.name === 'CastError') {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
@@ -63,17 +61,21 @@ export async function PUT(request: NextRequest, { params }: HandlerContext) {
 }
 
 // DELETE a category by ID
-export async function DELETE(request: NextRequest, { params }: HandlerContext) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
   try {
     await connectMongoDB();
-    const { id } = params;
+    
     const deletedCategory = await Category.findByIdAndDelete(id);
     if (!deletedCategory) {
       return NextResponse.json({ message: "Category not found" }, { status: 404 });
     }
     return NextResponse.json({ message: "Category deleted successfully" });
   } catch (error) {
-    console.error(`Error deleting category ${params.id}:`, error);
+    console.error(`Error deleting category ${id}:`, error);
     if (error instanceof Error && error.name === 'CastError') {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
