@@ -2,22 +2,21 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
-import { Category } from '@/app/models/Category'; // Adjust the import path if necessary
+import { Category } from '@/app/models/Category'; // Adjust path if necessary
 
 /**
  * @route   GET /api/admin/categories/[id]
  * @desc    Get a single category by ID
- * @access  Public // Change access control as needed
+ * @access  Public
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } } // <-- CORRECTED TYPE
+  { params }: { params: Promise<{ id: string }> } // <-- CORRECTED TYPE (Promise added back)
 ) {
   try {
+    const { id } = await params; // <-- And we correctly await it here
     await connectMongoDB();
-    const { id } = params;
-    
-    // Add validation for the ID format if using MongoDB
+
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
         return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
@@ -36,22 +35,21 @@ export async function GET(
 /**
  * @route   PUT /api/admin/categories/[id]
  * @desc    Update a category by ID
- * @access  Public // Change access control as needed
+ * @access  Public
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } } // <-- CORRECTED TYPE
+  { params }: { params: Promise<{ id: string }> } // <-- CORRECTED TYPE (Promise added back)
 ) {
   try {
+    const { id } = await params;
     await connectMongoDB();
-    const { id } = params;
 
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
     }
     
     const body = await request.json();
-    // It's good practice to not destructure everything, to avoid saving unwanted fields
     const { name, description, imageUrl } = body;
 
     const updateData: { [key: string]: any } = {};
@@ -77,15 +75,15 @@ export async function PUT(
 /**
  * @route   DELETE /api/admin/categories/[id]
  * @desc    Delete a category by ID
- * @access  Public // Change access control as needed
+ * @access  Public
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } } // <-- CORRECTED TYPE
+  { params }: { params: Promise<{ id:string }> } // <-- CORRECTED TYPE (Promise added back)
 ) {
   try {
+    const { id } = await params;
     await connectMongoDB();
-    const { id } = params;
 
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
