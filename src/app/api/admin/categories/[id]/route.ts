@@ -1,15 +1,24 @@
+// File: ./src/app/api/admin/categories/[id]/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
-import { Category } from '@/app/models/Category';
+import { Category } from '@/app/models/Category'; // Adjust the import path if necessary
 
-// GET a single category by ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+type Params = {
+  params: {
+    id: string;
+  }
+}
+
+/**
+ * @route   GET /api/admin/categories/[id]
+ * @desc    Get a single category by ID
+ * @access  Public // Change access control as needed
+ */
+export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params; // Correctly await the params for Next.js 15
     await connectMongoDB();
+    const { id } = params;
     
     const category = await Category.findById(id);
     if (!category) {
@@ -17,7 +26,6 @@ export async function GET(
     }
     return NextResponse.json(category);
   } catch (error) {
-    // We can't access `id` here if `await params` fails, so we log a general error.
     console.error(`Error in GET /api/admin/categories/[id]:`, error);
     if (error instanceof Error && error.name === 'CastError') {
       return NextResponse.json({ message: "Invalid Category ID format" }, { status: 400 });
@@ -26,14 +34,15 @@ export async function GET(
   }
 }
 
-// PUT (update) a category by ID
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+/**
+ * @route   PUT /api/admin/categories/[id]
+ * @desc    Update a category by ID
+ * @access  Public // Change access control as needed
+ */
+export async function PUT(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params; // Correctly await the params for Next.js 15
     await connectMongoDB();
+    const { id } = params;
     
     const body = await request.json();
     const { name, description, imageUrl } = body;
@@ -61,14 +70,15 @@ export async function PUT(
   }
 }
 
-// DELETE a category by ID
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+/**
+ * @route   DELETE /api/admin/categories/[id]
+ * @desc    Delete a category by ID
+ * @access  Public // Change access control as needed
+ */
+export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params; // Correctly await the params for Next.js 15
     await connectMongoDB();
+    const { id } = params;
     
     const deletedCategory = await Category.findByIdAndDelete(id);
     if (!deletedCategory) {
