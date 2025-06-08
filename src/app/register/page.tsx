@@ -70,9 +70,6 @@ export default function RegisterPage() { // Renamed to follow PascalCase convent
                         <h1 className="text-3xl font-bold text-slate-800">
                             Create Your Account
                         </h1>
-                        <p className="mt-2 text-sm text-slate-600">
-                            Join us! It only takes a minute.
-                        </p>
                     </div>
 
                     {userCreated && (

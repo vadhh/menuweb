@@ -58,7 +58,7 @@ export default function LoginPage() {
                 <div className="bg-white p-8 shadow-2xl rounded-xl space-y-6">
                     <div className="text-center">
                         <h2 className="text-3xl font-bold text-slate-800">
-                            Bakso Lebam
+                            Bakso Muncul
                         </h2>
                         <p className="mt-2 text-sm text-slate-600">
                             Login Admin
