@@ -4,10 +4,7 @@ import Google from "next-auth/providers/google";
 
 export const authOptions: NextAuthConfig = {
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
+    // Removed Google provider for simpler login
   ],
   callbacks: {
     async session({ session, token }) {
